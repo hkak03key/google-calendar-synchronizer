@@ -1,0 +1,41 @@
+version: 2.1
+
+executors:
+  node:
+    docker:
+      - image: node:8.17.0-jessie
+    working_directory: ~/
+
+#----------------------------------------
+commands:
+  install_clasp:
+    steps:
+      - run:
+          command: |
+            npm i @google/clasp
+            echo ${CLASPRC_JSON} > ~/.clasprc.json
+
+#----------------------------------------
+jobs:
+  gcp_deploy:
+    executor: node
+    steps:
+      - checkout:
+          path: project
+      - install_clasp
+      - run:
+          name: sls deploy
+          command: |
+            export PATH="~/node_modules/.bin:$PATH"
+            cd project/src
+            clasp push -f
+
+#----------------------------------------
+workflows:
+  gcp_deploy_workflow:
+    jobs:
+      - gcp_deploy:
+          filters:
+            branches:
+              only:
+                - master
