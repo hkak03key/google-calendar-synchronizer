@@ -76,13 +76,14 @@ GCalendarSynchronizerTokenManager.prototype.deleteSyncToken = function() {
 //----------------------------------------------
 /* GCalendarSynchronizerTokenManagerUsingScriptProp */
 
-GCalendarSynchronizerTokenManagerUsingScriptProp = function(calendarId, syncTokenKeyName) {
+GCalendarSynchronizerTokenManagerUsingScriptProp = function(calendarId, syncTokenKeyName, scriptProp) {
   GCalendarSynchronizerTokenManager.call(this, calendarId, syncTokenKeyName);
+  this._scriptProp = scriptProp;
 };
 classInherits(GCalendarSynchronizerTokenManagerUsingScriptProp, GCalendarSynchronizerTokenManager);
 
 GCalendarSynchronizerTokenManagerUsingScriptProp.prototype.loadSyncToken = function() {
-  var syncTokenVal = PropertiesService.getScriptProperties().getProperty(this._syncTokenKeyName);
+  var syncTokenVal = this._scriptProp.getProperty(this._syncTokenKeyName);
   if (syncTokenVal) {
     console.log('loadSyncToken:%s', syncTokenVal ? syncTokenVal : "N/A");
   }
@@ -91,12 +92,12 @@ GCalendarSynchronizerTokenManagerUsingScriptProp.prototype.loadSyncToken = funct
 
 GCalendarSynchronizerTokenManager.prototype.saveSyncToken = function(syncTokenVal) {
   console.log('saveSyncToken:%s', syncTokenVal);
-  PropertiesService.getScriptProperties().setProperty(this._syncTokenKeyName, syncTokenVal);
+  this._scriptProp.setProperty(this._syncTokenKeyName, syncTokenVal);
 };
 
 GCalendarSynchronizerTokenManager.prototype.deleteSyncToken = function() {
   console.log('deleteSyncToken');
-  PropertiesService.getScriptProperties().deleteProperty(this._syncTokenKeyName);
+  this._scriptProp.deleteProperty(this._syncTokenKeyName);
 };
 
 
